@@ -6,13 +6,13 @@ It is designed for rapid experimentation.
 For the early stages, it is developed around a dummy architecture called testarch (see testarch.md).
 
 ## Building:
-There isnt a build system yet. You can jump build the c code by doing
+There isnt a build system yet. You can just build the c code by doing
 ```
 gcc main.c -o sim
 ```
 and assemble a test program by 
 ```
-python assembly.py <infile> <outfile>
+python assemble.py <infile> <outfile>
 ```
 
 ## Running:
