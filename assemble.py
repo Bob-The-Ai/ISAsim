@@ -16,6 +16,9 @@ opcodes = {
     "sll": 4,
     "neg": 5,
     "hlt": 6,
+    "tst": 7,
+    "cmp": 8,
+    "brc": 9,
 }
 
 # Helper to encode fields
@@ -67,6 +70,18 @@ def assemble_line(line):
     elif instr == "hlt":
         print("fucking hlt")
         return encode_r(opcode, 0, 0, 0, 0, 0)
+
+    elif instr == "tst":
+        op1, op2 = reg(args[0]), reg(args[1])
+        return encode_r(opcode, op1, op2, 0, 0, 0)
+
+    elif instr == "cmp":
+        op1, op2, op3 = reg(args[0]), reg(args[1]), reg(args[2])
+        return encode_r(opcode, op1, op2, op3, 0, 0)
+
+    elif instr == "brc":
+        op1, op2, trgt = reg(args[0]), int(args[1], 0), int(args[2], 0)
+        return encode_i(opcode, op1, op2, trgt)
 
     else:
         raise ValueError(f"Unsupported instruction: {instr}")

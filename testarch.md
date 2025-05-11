@@ -18,13 +18,30 @@ It provides a simple and easily attainable goal for the simulator programmers.
 5. sll: left logical shift
 6. neg: negates a register
 7. hlt: ends the simulation
-
+8. tst: tests a register by itself and sets the flags
+9. cmp: compares 2 registers and sets the flags
+10. brc: branches based on flags
 
 # Registers:
 Offers 32 registers of word size.
 They are named s0-sf and t0-tf.
 s0 is also known as sp (stack pointer).
 t0 is also known as ra (return address).
+
+
+# Flags:
+Any register can be used to store flags. Each flag is one bit long.
+The tst, cmp and brc instructions make use of them.
+Those flags are:
+1. false (always 0)
+2. zero
+3. equal
+4. greater
+5. lesser
+6. greater equal
+7. lesser equal
+8. positive
+9. negative
 
 
 # Instruction encodings:
@@ -87,3 +104,21 @@ xxxxxx | xxxxx xxxxx | xxxxxxxxxxxxxxxx
 > R Type
 > opcode: 6
 > function: ends the simulation
+
+8. tst op1, op2
+> R Type
+> opcode 7
+> op1 -> register to be tested, op2 -> flag location
+> function: test op1 -> op2
+
+9. cmp op1, op2, op3
+> R Type
+> opcode 8
+> op1 -> first operand, op2 -> second operand, op3 -> flag location
+> function compare op1, op2 -> op3
+
+10. brc op1, op2, target
+> I type
+> opcode 9
+> op1 -> flag location, op2 -> flag bit, target -> branch target
+> function if (op1\[op2\]) pc = target
