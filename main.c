@@ -71,7 +71,7 @@ instruction decode(int raw) {
 
 int execute(instruction inst, int* reg, int* pc, char* mem, int* ic) {
     int should_exit = 0;
-    *ic ++;
+    *ic += 1;
     if (inst.type) {
         // only the ldi instruction is here but we have to futureproof.
         switch (inst.ienc.opcode) {
@@ -85,6 +85,7 @@ int execute(instruction inst, int* reg, int* pc, char* mem, int* ic) {
             // printf("%d\n", (int16_t)inst.ienc.imm << 2);
             if (inst.ienc.op2 == 0) *pc += ((int16_t)inst.ienc.imm) << 2;
             else if ((reg[inst.ienc.op1] >> inst.ienc.op2) & 0b1) *pc += ((int16_t)inst.ienc.imm) << 2;
+            else *pc += 4;
             break;
         }
     } else {
@@ -121,22 +122,21 @@ int execute(instruction inst, int* reg, int* pc, char* mem, int* ic) {
             *pc += 4;
             break;
         case 6:
-            printf("hlt\nExecution ended after running %d instructions.\n", ic);
+            printf("hlt\nExecution ended after running %d instructions.\n", *ic);
             should_exit = 1;
             *pc += 4;
             break;
         case 7: // tst
-            if (reg[inst.renc.op2] == 0) flg_acc |= 0b10;
-            if (reg[inst.renc.op2] > 0) flg_acc |= 0b10000000;
-            else flg_acc |= 0b100000000;
+            if (reg[inst.renc.op2] == 0) flg_acc |= 1 << 1;
+            if (reg[inst.renc.op2] > 0) flg_acc |= 1 << 8;
+            else flg_acc |= 1 << 9;
             reg[inst.renc.op1] = flg_acc;
-            printf("%x\n", flg_acc);
             *pc += 4;
             break;
         case 8: // cmp
-            if (reg[inst.renc.op2] == reg[inst.renc.op3]) flg_acc |= 0b100;
-            if (reg[inst.renc.op2] > reg[inst.renc.op3]) flg_acc |= 0b1000;
-            if (reg[inst.renc.op2] < reg[inst.renc.op3]) flg_acc |= 0b10000;
+            if (reg[inst.renc.op2] == reg[inst.renc.op3]) flg_acc |= 1 << 2;
+            if (reg[inst.renc.op2] > reg[inst.renc.op3]) flg_acc |= 1 << 3;
+            if (reg[inst.renc.op2] < reg[inst.renc.op3]) flg_acc |= 1 << 4;
             *pc += 4;
             break;
         }

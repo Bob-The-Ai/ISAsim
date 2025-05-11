@@ -19,12 +19,20 @@ add s2, s2, s3
 add s2, s2, s1
 stw sf, s2
 
+ldi s1, 0
+tst s3, s1
+stw s3, s3
+brc s3, 0x2, 2
+stw s1, s2
+
 ldi s1, 1
 neg s1, s1
 ldi s2, 15
 stw s2, s2
 add s2, s2, s1
 tst s3, s2
-brc s3, 0x80, -4
+brc s3, 0x8, -3
+
+add s2, s2, s1
 
 hlt
