@@ -20,3 +20,14 @@ To run an assembled program, you can use the following command:
 ```
 ./sim <filename>
 ```
+
+# Getting started:
+Clone the repo with:
+```
+git clone https://github.com/Bob-The-Ai/ISAsim.git
+```
+Build the simulator (see Building)
+Read the testarch specs and maybe the example test.s and write your own test program.
+Assemble it and run it.
+
+If you stumble on any bugs, please make an issue.
