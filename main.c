@@ -69,8 +69,9 @@ instruction decode(int raw) {
     return res;
 }
 
-int execute(instruction inst, int* reg, int* pc, char* mem) {
+int execute(instruction inst, int* reg, int* pc, char* mem, int* ic) {
     int should_exit = 0;
+    *ic ++;
     if (inst.type) {
         // only the ldi instruction is here but we have to futureproof.
         switch (inst.ienc.opcode) {
@@ -120,8 +121,7 @@ int execute(instruction inst, int* reg, int* pc, char* mem) {
             *pc += 4;
             break;
         case 6:
-            // change how the instruction count is calculated. it works now that there are no branches but it will not be correct if they get added.
-            printf("hlt\nExecution ended after running %d instructions.\n", (*pc >> 2)+1);
+            printf("hlt\nExecution ended after running %d instructions.\n", ic);
             should_exit = 1;
             *pc += 4;
             break;
@@ -169,13 +169,14 @@ int main(int argc, char** argv) {
 
     int pc = 0;
     int registers[32] = { 0 }; // s0-sf, t0-tf + fr (flag register)
+    int ic = 0;
 
     int want_to_die = 0;
     while (want_to_die == 0) {
         int raw = fetch(pc, code);
         // printf("0x%08x\n", raw);
         instruction inst = decode(raw);
-        want_to_die = execute(inst, registers, &pc, memory);
+        want_to_die = execute(inst, registers, &pc, memory, &ic);
     }
 
     free(code);
