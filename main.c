@@ -69,7 +69,7 @@ instruction decode(int raw) {
     return res;
 }
 
-int execute(instruction inst, int* reg, int* pc) {
+int execute(instruction inst, int* reg, int* pc, char* mem) {
     int should_exit = 0;
     if (inst.type) {
         // only the ldi instruction is here but we have to futureproof.
@@ -83,10 +83,13 @@ int execute(instruction inst, int* reg, int* pc) {
     } else {
         switch (inst.renc.opcode) {
         case 1:
-            printf("ldw\n");
+            // reg[inst.renc.op1] = mem[reg[inst.renc.op2]];
+            memcpy((char*)&reg[inst.renc.op1], &mem[reg[inst.renc.op2]], 4);
             break;
         case 2:
             // printf("stw\n");
+            // mem[reg[inst.renc.op1]] = reg[inst.renc.op2];
+            memcpy(&mem[reg[inst.renc.op1]], (char*)&reg[inst.renc.op2], 4);
             printf("0x%08x\n", reg[inst.renc.op2]);
             break;
         case 3:
@@ -136,16 +139,17 @@ int main(int argc, char** argv) {
     fclose(fptr);
 
     printf("Loaded file!\nSize: %d\n\n", size);
+    char* memory = (char*)malloc(0xffff);
 
     int pc = 0;
-    int registers[32] = { 0 };
+    int registers[32] = { 0 }; // s0-sf, t0-tf + fr (flag register)
 
     int want_to_die = 0;
     while (want_to_die == 0) {
         int raw = fetch(pc, code);
         // printf("0x%08x\n", raw);
         instruction inst = decode(raw);
-        want_to_die = execute(inst, registers, &pc);
+        want_to_die = execute(inst, registers, &pc, memory);
     }
 
     free(code);
