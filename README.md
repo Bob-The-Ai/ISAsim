@@ -14,11 +14,21 @@ and assemble a test program by
 ```
 python assemble.py <infile> <outfile>
 ```
+To build the disassembler, you can run
+```
+gcc disassemble.c -o dis
+```
 
 ## Running:
 To run an assembled program, you can use the following command:
 ```
 ./sim <filename>
+```
+
+## Disassembling a program:
+The disassembler can output to stdout or a file. If a output file is provided, the output will be written there, if not, the output will be written to stdout.
+```
+./dis <infile> <outfile>
 ```
 
 # Getting started:
