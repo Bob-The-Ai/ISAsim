@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdint.h>
 
+#include "ISA.h"
+
 #define Iopc inst.ienc.opcode
 #define Iop1 reg[inst.ienc.op1]
 #define Iop2 reg[inst.ienc.op2]
@@ -14,28 +16,6 @@
 #define Rop3 reg[inst.renc.op3]
 #define Rshf inst.renc.shift
 #define Rflg inst.renc.flags
-
-typedef struct {
-    uint8_t opcode;
-    uint8_t op1;
-    uint8_t op2;
-    uint8_t op3;
-    uint8_t shift;
-    uint8_t flags;
-} RType;
-
-typedef struct {
-    uint8_t opcode;
-    uint8_t op1;
-    uint8_t op2;
-    uint16_t imm;
-} IType;
-
-typedef struct {
-    int type;
-    RType renc;
-    IType ienc;
-} instruction;
 
 int fetch(int pc, char* code) {
     char buf[4];

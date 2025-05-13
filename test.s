@@ -27,7 +27,7 @@ stw s1, s2
 
 ldi s1, 1
 neg s1, s1
-ldi s2, 15
+ldi s2, 0xff
 stw s2, s2
 add s2, s2, s1
 tst s3, s2
