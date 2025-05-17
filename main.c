@@ -5,6 +5,8 @@
 
 #include "ISA.h"
 
+#define CLOCK_PERIOD 2
+
 #define Iopc inst.ienc.opcode
 #define Iop1 reg[inst.ienc.op1]
 #define Iop2 reg[inst.ienc.op2]
@@ -150,6 +152,7 @@ int main(int argc, char** argv) {
     int pc = 0;
     int registers[32] = { 0 }; // s0-sf, t0-tf + fr (flag register)
     int ic = 0;
+    int cc = 0;
 
     int want_to_die = 0;
     while (want_to_die == 0) {
@@ -157,7 +160,14 @@ int main(int argc, char** argv) {
         // printf("0x%08x\n", raw);
         instruction inst = decode(raw);
         want_to_die = execute(inst, registers, &pc, memory, &ic);
+        cc++;
     }
+    printf("Program completed after %d clock cycles.\n", cc);
+    // A time unit is inspired from a pipeline implementation. It is essentially the time each stage needs to execute.
+    // For a single cycle implementation like this one, the clock period must be equal to however many "stages" it has 
+    // multiplied by a time unit.
+    printf("Program completed after %d time units.\n", cc*5);
+    printf("Or %.3fμs\n", (cc*5*CLOCK_PERIOD)/1000.0);
 
     free(code);
     return 0;
